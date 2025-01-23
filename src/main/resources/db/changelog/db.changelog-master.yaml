@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: changes/001-add-operation-and-category-tables.yaml
+      relativeToChangelogFile: true

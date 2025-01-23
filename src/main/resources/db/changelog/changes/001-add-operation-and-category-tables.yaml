@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001_create_category_table
+      author: n.zinovev
+      changes:
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: category_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_description
+                  type: varchar(1000)
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: 002_create_operation_table
+      author: n.zinovev
+      changes:
+        - createTable:
+            tableName: operation
+            columns:
+              - column:
+                  name: operation_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: operation_public_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: operation_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: operation_amount
+                  type: decimal(22,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: operation_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_operation_category
+                    references: category(category_id)
+  - changeSet:
+      id: 003_add_operation_type_constraint
+      author: n.zinovev
+      changes:
+        - sql:
+            sql: ALTER TABLE operation ADD CONSTRAINT check_operation_type CHECK (operation_type IN ('DEPOSIT', 'WITHDRAW'));
