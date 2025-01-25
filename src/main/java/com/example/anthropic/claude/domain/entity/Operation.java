@@ -23,18 +23,22 @@ import java.math.BigDecimal;
 public class Operation {
 
     @Id
+    @Column(name = "operation_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "operation_public_id", nullable = false, unique = true)
+    private String publicId;
+
+    @Column(name = "operation_name", nullable = false)
+    private String name;
+
     @Column(name = "operation_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private OperationType operationType;
+    private OperationType type;
 
-    @Column(name = "amount", nullable = false)
+    @Column(name = "operation_amount", nullable = false)
     private BigDecimal amount;
-
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

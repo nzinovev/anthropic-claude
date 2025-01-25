@@ -1,28 +1,25 @@
 spring:
-  application:
-    name: anthropic-claude
   datasource:
     url: jdbc:postgresql://localhost:5432/anthropic_claude?currentSchema=anthropic_claude
     username: anthropic_claude_app
     password: strongPassword
     driver-class-name: org.postgresql.Driver
-    jpa:
+    # Connection pool properties (using HikariCP - Spring Boot default)
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 300000   # 5 minutes
+      pool-name: HikariPool
+      max-lifetime: 1200000  # 20 minutes
+      connection-timeout: 20000 # 20 seconds
+  jpa:
+    hibernate:
+      ddl-auto: validate  # validates the schema, makes no changes to the database
+    show-sql: false       # set to true if you want to see SQL queries in logs
+    properties:
       hibernate:
-        ddl-auto: validate  # validates the schema, makes no changes to the database
-      show-sql: false       # set to true if you want to see SQL queries in logs
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
-          format_sql: true  # formats SQL queries in logs if show-sql is true
-    liquibase:
-      change-log: classpath:db/changelog/db.changelog-master.yaml
-      enabled: true        # enables Liquibase auto-deployment of changes
-
-      # Connection pool properties (using HikariCP - Spring Boot default)
-      hikari:
-        minimum-idle: 5
-        maximum-pool-size: 20
-        idle-timeout: 300000   # 5 minutes
-        pool-name: HikariPool
-        max-lifetime: 1200000  # 20 minutes
-        connection-timeout: 20000 # 20 seconds
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true  # formats SQL queries in logs if show-sql is true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true        # enables Liquibase auto-deployment of changes

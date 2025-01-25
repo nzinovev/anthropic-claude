@@ -20,13 +20,14 @@ import java.util.Set;
 public class Category {
 
     @Id
+    @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "category_name", nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "category_description")
     private String description;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
