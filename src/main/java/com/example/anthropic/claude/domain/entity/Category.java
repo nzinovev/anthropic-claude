@@ -44,5 +44,4 @@ public class Category {
     public int hashCode() {
         return id != null ? id.hashCode() : super.hashCode(); // Использование super.hashCode() для уникальности несохранённых объектов
     }
-
 }
