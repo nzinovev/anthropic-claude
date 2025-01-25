@@ -22,6 +22,12 @@ databaseChangeLog:
                   type: varchar(1000)
                   constraints:
                     nullable: true
+        - addAutoIncrement:
+            tableName: category
+            columnName: category_id
+            columnDataType: bigint
+            startWith: 1
+            incrementBy: 1
   - changeSet:
       id: 002_create_operation_table
       author: n.zinovev
@@ -63,6 +69,12 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_operation_category
                     references: category(category_id)
+        - addAutoIncrement:
+            tableName: operation
+            columnName: operation_id
+            columnDataType: bigint
+            startWith: 1
+            incrementBy: 1
   - changeSet:
       id: 003_add_operation_type_constraint
       author: n.zinovev
