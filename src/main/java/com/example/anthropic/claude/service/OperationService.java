@@ -33,9 +33,12 @@ public class OperationService {
 
     @Transactional
     public OperationResponse updateOperation(String publicId, OperationUpdateRequest request) {
-        final var operation = operationRepository.findByPublicId(publicId)
+        return operationRepository.findByPublicId(publicId)
+                .map(operation -> updateOperation(operation, request))
                 .orElseThrow(() -> new RuntimeException("Operation not found"));
+    }
 
+    private OperationResponse updateOperation(Operation operation, OperationUpdateRequest request) {
         if (request.getName() != null) {
             operation.setName(request.getName());
         }
