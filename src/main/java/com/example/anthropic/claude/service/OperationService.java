@@ -5,10 +5,12 @@ import com.example.anthropic.claude.domain.entity.Operation;
 import com.example.anthropic.claude.dto.OperationCreateRequest;
 import com.example.anthropic.claude.dto.OperationResponse;
 import com.example.anthropic.claude.dto.OperationUpdateRequest;
+import com.example.anthropic.claude.dto.PageResponse;
 import com.example.anthropic.claude.mapper.OperationMapper;
 import com.example.anthropic.claude.repository.CategoryRepository;
 import com.example.anthropic.claude.repository.OperationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,20 @@ public class OperationService {
         return operationRepository.findByPublicId(publicId)
                 .map(operation -> updateOperation(operation, request))
                 .orElseThrow(() -> new RuntimeException("Operation not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<OperationResponse> findAll(Pageable pageable) {
+        final var operationPage = operationRepository.findAll(pageable);
+        final var responsePage = operationPage.map(operationMapper::toDto);
+        return PageResponse.from(responsePage);
+    }
+
+    @Transactional(readOnly = true)
+    public OperationResponse findByPublicId(String publicId) {
+        final var operation = operationRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new RuntimeException("Operation not found"));
+        return operationMapper.toDto(operation);
     }
 
     private OperationResponse updateOperation(Operation operation, OperationUpdateRequest request) {
