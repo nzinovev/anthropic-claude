@@ -54,6 +54,15 @@ public class OperationService {
         return operationMapper.toDto(operation);
     }
 
+    @Transactional
+    public void deleteOperation(String publicId) {
+        final var operation = operationRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new RuntimeException(
+                        String.format("Operation with publicId %s not found", publicId)));
+
+        operationRepository.delete(operation);
+    }
+
     private OperationResponse updateOperation(Operation operation, OperationUpdateRequest request) {
         if (request.getName() != null) {
             operation.setName(request.getName());
