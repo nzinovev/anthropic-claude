@@ -1,11 +1,11 @@
 package com.example.anthropic.claude.service;
 
-import com.example.anthropic.claude.domain.entity.Category;
 import com.example.anthropic.claude.domain.entity.Operation;
 import com.example.anthropic.claude.dto.OperationCreateRequest;
 import com.example.anthropic.claude.dto.OperationResponse;
 import com.example.anthropic.claude.dto.OperationUpdateRequest;
 import com.example.anthropic.claude.dto.PageResponse;
+import com.example.anthropic.claude.exception.CategoryNotFoundException;
 import com.example.anthropic.claude.mapper.OperationMapper;
 import com.example.anthropic.claude.repository.CategoryRepository;
 import com.example.anthropic.claude.repository.OperationRepository;
@@ -24,12 +24,14 @@ public class OperationService {
 
     @Transactional
     public OperationResponse createOperation(OperationCreateRequest request) {
-        Category category = categoryRepository.getReferenceById(request.getCategoryId());
+        final var category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        String.format("Category with id %d not found", request.getCategoryId())));
 
-        Operation operation = operationMapper.toEntity(request);
+        final var operation = operationMapper.toEntity(request);
         operation.setCategory(category);
 
-        Operation savedOperation = operationRepository.save(operation);
+        final var savedOperation = operationRepository.save(operation);
         return operationMapper.toDto(savedOperation);
     }
 

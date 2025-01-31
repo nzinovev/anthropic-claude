@@ -5,6 +5,7 @@ import com.example.anthropic.claude.dto.OperationResponse;
 import com.example.anthropic.claude.dto.OperationUpdateRequest;
 import com.example.anthropic.claude.dto.PageResponse;
 import com.example.anthropic.claude.service.OperationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,7 +30,7 @@ public class OperationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OperationResponse createOperation(@RequestBody OperationCreateRequest request) {
+    public OperationResponse createOperation(@Valid @RequestBody OperationCreateRequest request) {
         return operationService.createOperation(request);
     }
 
