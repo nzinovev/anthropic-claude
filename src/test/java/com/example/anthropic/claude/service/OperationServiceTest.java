@@ -7,7 +7,7 @@ import com.example.anthropic.claude.dto.OperationCreateRequest;
 import com.example.anthropic.claude.dto.OperationResponse;
 import com.example.anthropic.claude.dto.OperationUpdateRequest;
 import com.example.anthropic.claude.dto.PageResponse;
-import com.example.anthropic.claude.exception.CategoryNotFoundException;
+import com.example.anthropic.claude.exception.NotFoundException;
 import com.example.anthropic.claude.mapper.OperationMapper;
 import com.example.anthropic.claude.repository.CategoryRepository;
 import com.example.anthropic.claude.repository.OperationRepository;
@@ -118,7 +118,7 @@ class OperationServiceTest {
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(CategoryNotFoundException.class,
+        assertThrows(NotFoundException.class,
                 () -> operationService.createOperation(createRequest));
         verify(operationRepository, never()).save(any(Operation.class));
     }
