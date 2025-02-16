@@ -24,14 +24,22 @@ public class GlobalExceptionHandler {
         return response;
     }
 
-    @ExceptionHandler(CategoryNotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ValidationErrorResponse handleCategoryNotFoundException(CategoryNotFoundException ex) {
+    public ValidationErrorResponse handleCategoryNotFoundException(NotFoundException ex) {
         ValidationErrorResponse response = new ValidationErrorResponse();
         response.getErrors().add(new ValidationErrorResponse.ValidationError(
-                "categoryId",
+                "id",
                 ex.getMessage()
         ));
         return response;
     }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto handleException(Exception ex) {
+        return new ErrorDto(ex.getMessage());
+    }
+
+    private record ErrorDto(String message){}
 }

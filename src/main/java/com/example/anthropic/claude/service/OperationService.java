@@ -5,7 +5,7 @@ import com.example.anthropic.claude.dto.OperationCreateRequest;
 import com.example.anthropic.claude.dto.OperationResponse;
 import com.example.anthropic.claude.dto.OperationUpdateRequest;
 import com.example.anthropic.claude.dto.PageResponse;
-import com.example.anthropic.claude.exception.CategoryNotFoundException;
+import com.example.anthropic.claude.exception.NotFoundException;
 import com.example.anthropic.claude.mapper.OperationMapper;
 import com.example.anthropic.claude.repository.CategoryRepository;
 import com.example.anthropic.claude.repository.OperationRepository;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OperationService {
 
+    public static final String OPERATION_WITH_ID_NOT_FOUND = "Operation with id %s not found";
     private final OperationRepository operationRepository;
     private final CategoryRepository categoryRepository;
     private final OperationMapper operationMapper;
@@ -25,7 +26,7 @@ public class OperationService {
     @Transactional
     public OperationResponse createOperation(OperationCreateRequest request) {
         final var category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException(
+                .orElseThrow(() -> new NotFoundException(
                         String.format("Category with id %d not found", request.getCategoryId())));
 
         final var operation = operationMapper.toEntity(request);
@@ -39,7 +40,7 @@ public class OperationService {
     public OperationResponse updateOperation(String publicId, OperationUpdateRequest request) {
         return operationRepository.findByPublicId(publicId)
                 .map(operation -> updateOperation(operation, request))
-                .orElseThrow(() -> new RuntimeException("Operation not found"));
+                .orElseThrow(() -> new NotFoundException(String.format(OPERATION_WITH_ID_NOT_FOUND, publicId)));
     }
 
     @Transactional(readOnly = true)
@@ -52,15 +53,14 @@ public class OperationService {
     @Transactional(readOnly = true)
     public OperationResponse findByPublicId(String publicId) {
         final var operation = operationRepository.findByPublicId(publicId)
-                .orElseThrow(() -> new RuntimeException("Operation not found"));
+                .orElseThrow(() -> new NotFoundException(String.format(OPERATION_WITH_ID_NOT_FOUND, publicId)));
         return operationMapper.toDto(operation);
     }
 
     @Transactional
     public void deleteOperation(String publicId) {
         final var operation = operationRepository.findByPublicId(publicId)
-                .orElseThrow(() -> new RuntimeException(
-                        String.format("Operation with publicId %s not found", publicId)));
+                .orElseThrow(() -> new NotFoundException(String.format(OPERATION_WITH_ID_NOT_FOUND, publicId)));
 
         operationRepository.delete(operation);
     }
